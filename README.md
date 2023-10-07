@@ -2,6 +2,6 @@
 build a webtoon application
 
 ## members
-### eungchan
++ eungchan
 ## language
-### dart, flutter
++ dart, flutter
