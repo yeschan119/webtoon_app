@@ -5,6 +5,17 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        elevation: 3, //elevation is a shadow func
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.green,
+        title: const Text(
+          "오늘의 웹툰s",
+          style: TextStyle(fontWeight: FontWeight.w500, fontSize: 22),
+        ),
+      ),
+    );
   }
 }
