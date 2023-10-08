@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:webtoon/models/webtoon_model.dart';
+import 'package:webtoon/services/api_service.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
+
+  Future<List<WebtoonModel>> webtoons = ApiService.getTodaysToons();
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +19,19 @@ class HomeScreen extends StatelessWidget {
           "오늘의 웹툰s",
           style: TextStyle(fontWeight: FontWeight.w500, fontSize: 22),
         ),
+      ),
+
+      ///statefullwidgetd을 사용하면 initstate을 사용하여 초기화 시켜주고
+      ///future data를 받아오는 동안 setstate을 돌려주면서 refresh 시켜주는데,
+      ///stateless를 사용하면 futurebuild라는 심박한 widget을 사용하여 future 맞춤 로직을 짤 수 있음
+      body: FutureBuilder(
+        future: webtoons,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return const Text("There is data!");
+          }
+          return const Text("Loading....");
+        },
       ),
     );
   }

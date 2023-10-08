@@ -7,12 +7,13 @@ import 'package:http/http.dart' as http;
 import 'package:webtoon/models/webtoon_model.dart';
 
 class ApiService {
-  final String baseUrl = "https://webtoon-crawler.nomadcoders.workers.dev";
-  final String today = "today";
+  static const String baseUrl =
+      "https://webtoon-crawler.nomadcoders.workers.dev";
+  static const String today = "today";
 
   //async keyword가 붙은 함수는 비동기 처리를 하겠다는 것이고 함수 안에 await keyword가 사용된다.
   //async를 쓸 경우 반환값에 Future<>를 감싸줘야 함 void일 때는 노상관
-  Future<List<WebtoonModel>> getTodaysToons() async {
+  static Future<List<WebtoonModel>> getTodaysToons() async {
     //get은 http패키지에 있는 애인데 이름이 너무 범용적이어서 namefspace를 지정하여 http를 붙여줌
     //get 요청을 보낼 때는 Uri type으로 가져와야 하므로… (get 속성을 확인)
     final url = Uri.parse('$baseUrl/$today');
