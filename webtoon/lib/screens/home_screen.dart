@@ -32,11 +32,28 @@ class HomeScreen extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             ///데이터가 너무 많을 때는 column이나 row를 쓰지 않음. ListView를 사용하면 알아서 scrollview가 됨
+            ///But, ListView는 모든 아이템을 한꺼번에 보여주기 때문에 이런식으로 쓰면 메모리가 터짐
+            /*
             return ListView(
               children: [
                 for (var webtoon in snapshot.data!) Text(webtoon.title)
               ],
             );
+            */
+            ///ListView.builder는 ListView의 upgrade 버전
+            ///한번에 얼마만큼 보여줄지 선택하려면 ListView.builder widget사용
+            ///itemBuilder는 ListView.builder가 아이템을 빌드할때 호출하는 함수. index는 현재 사용자가 보는 아이템의 index number.
+            ///사용자가 현재 보지 않는 아이템은 메모리에서 날림
+            return ListView.builder(
+                scrollDirection: Axis.horizontal,
+                //한번에 얼마만큼 보여줄지 선택
+                //여기로 들어올 때는 데이터 요청을 보내고 결과를 받는 순간이기 때문에 전체 데이터가 아닌 일부 데이터임
+                //그 일부만 보여주는 거
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  var webtoon = snapshot.data![index];
+                  return Text(webtoon.title);
+                });
           }
           return const Center(
             child: CircularProgressIndicator(),
