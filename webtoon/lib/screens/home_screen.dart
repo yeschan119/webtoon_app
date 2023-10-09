@@ -45,26 +45,83 @@ class HomeScreen extends StatelessWidget {
             ///itemBuilder는 ListView.builder가 아이템을 빌드할때 호출하는 함수. index는 현재 사용자가 보는 아이템의 index number.
             ///사용자가 현재 보지 않는 아이템은 메모리에서 날림
             ///builder대신에 seperated를 쓰면 builder에 separatorBuilder라는 게 추가됨
-            return ListView.separated(
-              scrollDirection: Axis.horizontal,
-              //한번에 얼마만큼 보여줄지 선택
-              //여기로 들어올 때는 데이터 요청을 보내고 결과를 받는 순간이기 때문에 전체 데이터가 아닌 일부 데이터임
-              //그 일부만 보여주는 거
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                var webtoon = snapshot.data![index];
-                return Text(webtoon.title);
-              },
-              //이 웨젯을 사용하면 아이템 사이에 뭔가를 추가할 수 있음
-              separatorBuilder: (context, index) => const SizedBox(
-                width: 20,
-              ),
+            return Column(
+              children: [
+                const SizedBox(
+                  height: 50,
+                ),
+
+                ///ListView는 높이가 무한대이기 때문에 column안에 그대로 넣으면 에러남 unbounded error
+                ///expanded로 감싸면, expanded는 남는 공간을 다 차지하는 위젯이기 때문에 알아서 공간이 할당됨
+                Expanded(
+                  ///만들어진 ListView에서 code action을 누르고  extra method를 클릭하면 원하는 이름의 method가 만들어짐
+                  ///해당 method는 코드 아래에 생성
+                  child: makeList(snapshot),
+                ),
+              ],
             );
           }
           return const Center(
             child: CircularProgressIndicator(),
           );
         },
+      ),
+    );
+  }
+
+  ListView makeList(AsyncSnapshot<List<WebtoonModel>> snapshot) {
+    return ListView.separated(
+      scrollDirection: Axis.horizontal,
+      //한번에 얼마만큼 보여줄지 선택
+      //여기로 들어올 때는 데이터 요청을 보내고 결과를 받는 순간이기 때문에 전체 데이터가 아닌 일부 데이터임
+      //그 일부만 보여주는 거
+      itemCount: snapshot.data!.length,
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      itemBuilder: (context, index) {
+        var webtoon = snapshot.data![index];
+        return Column(
+          children: [
+            Container(
+              width: 250,
+
+              ///edge를 등굴게 하려고 borderRadius를 설정하는데 clipBehavior에서 부모의 침범여부?를 설정해 주어야 적용됨
+              clipBehavior: Clip.hardEdge,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: const [
+                  BoxShadow(
+                    blurRadius: 5,
+                    offset: Offset(5, 5),
+                    color: Colors.black45,
+                  ),
+                ],
+              ),
+              child: Image.network(
+                webtoon.thumb,
+
+                ///http에서 User-Agent는 서버 또는 클라이언트의 소프트웨어 버전이나 OS 버전을 나타내는 헤더인데, 얘를 넣어 줘야 이미지를 제대로 불러옴
+                ///https://gist.github.com/preinpost/941efd33dff90d9f8c7a208da40c18a9
+                headers: const {
+                  "User-Agent":
+                      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
+                },
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              webtoon.title,
+              style: const TextStyle(
+                fontSize: 20,
+              ),
+            ),
+          ],
+        );
+      },
+      //이 웨젯을 사용하면 아이템 사이에 뭔가를 추가할 수 있음
+      separatorBuilder: (context, index) => const SizedBox(
+        width: 40,
       ),
     );
   }
